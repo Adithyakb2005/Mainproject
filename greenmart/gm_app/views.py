@@ -45,14 +45,12 @@ def addproduct(req) :
         if req.method=='POST':
             pid=req.POST['pid']
             name=req.POST['name']
-            dis=req.POST['descrip']
+            dis=req.POST['dis']
             offer_price=req.POST['offer_price']
             # offer_price = req.POST.get('offer_price')
-
-
             price=req.POST['price']
             stock=req.POST['stock']
-            file=req.FILES['img'] #to get the img from html page we  are using file method instead of post and adding enctype in html page
+            file=req.FILES['img'] 
 
             data=Product.objects.create(pid=pid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock)
             data=Product.objects.get(pk=pid)
@@ -67,10 +65,8 @@ def editproduct(req,pid) :
         if req.method=='POST':
             proid=req.POST['proid']
             name=req.POST['name']
-            dis=req.POST['descrip']
-            # offer_price=req.POST['offer_price']
-            offer_price = req.POST.get('offer_price')
-
+            dis=req.POST['dis']
+            offer_price=req.POST['offer_price']
             price=req.POST['price']
             stock=req.POST['stock']
             file=req.FILES.get('img')
@@ -80,14 +76,21 @@ def editproduct(req,pid) :
                 data.img=file
                 data.save()
             else:  
-                Product.objects.filter(pk=pid).update(pid=pid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock,img=file)
+                Product.objects.filter(pk=pid).update(pid=proid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock,img=file)
             return redirect(shophome)
         else:
             data=Product.objects.get(pk=pid)
             return render(req,'shop/edit.html',{'data':data})
+def deleteproduct(req,pid):
+    data=Product.objects.get(pk=pid)
+    file=data.img.url
+    file=file.split('/')[-1]
+    os.remove('media/'+file)
+    data.delete()
+    return redirect(shophome)
 def product_view(req,pid):
        data=Product.objects.get(pk=pid)
-       return render(req,'user/product_view.html',{'product':data})
+       return render(req,'user/product_view.html',{'Product':data})
     
 
 def add_to_cart(req,pid):
@@ -98,7 +101,7 @@ def add_to_cart(req,pid):
 def view_cart(req):
     user=User.objects.get(username=req.session['user'])
     data=Cart.objects.filter(user=user)
-    return render(req,'user/cart.html',{'cart':data})
+    return render(req,'user/cart.html',{'Cart':data})
 
 # --------------------------------------------------register
 def register(req):
@@ -122,3 +125,5 @@ def userhome(req):
         return render(req,'user/userhome.html',{'Product':data})
     else:
         return redirect(login)
+def aboutuser(req):
+    return render(req,'user/about.html')
