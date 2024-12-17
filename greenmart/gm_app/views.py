@@ -127,3 +127,5 @@ def userhome(req):
         return redirect(login)
 def aboutuser(req):
     return render(req,'user/about.html')
+def Contactuser(req):
+    return render(req,'user/Contactus.html')
