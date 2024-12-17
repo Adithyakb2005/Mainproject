@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background: linear-gradient(135deg, #f5f7fa, #c3cfe2); font-family: Arial, sans-serif; color: #333;">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: #0e1527; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); padding: 15px 0;">
+        <div class="container">
+            <a class="navbar-brand" href="shophome">
+                <img src="{% static 'images/sm_logo.png' %}" alt="Logo" style="height: 70px; transition: transform 0.3s ease-in-out;">
+            </a>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="shophome" style="color: white;">Home</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Form Container -->
+    <div class="container d-flex justify-content-center align-items-center" style="height: 90vh;">
+        <div class="card shadow-lg" style="width: 100%; max-width: 500px; background: white; border-radius: 15px; padding: 30px;">
+            <h2 class="text-center mb-4" style="color: #0e1527; font-weight: bold;">Add Category</h2>
+
+            <!-- Form -->
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="Category_name" style="font-weight: bold;">Category Name</label>
+                    <input 
+                        type="text" 
+                        name="cate_name" 
+                        placeholder="Enter product category" 
+                        class="form-control" 
+                        style="border-radius: 30px; padding: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 1px solid #ddd;"
+                        required
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    class="btn btn-primary btn-block" 
+                    style="background: #3498db; border: none; border-radius: 30px; padding: 10px; font-size: 1.1rem; font-weight: bold; transition: background 0.3s;"
+                    onmouseover="this.style.background='#2980b9';"
+                    onmouseout="this.style.background='#3498db';"
+                > Submit
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

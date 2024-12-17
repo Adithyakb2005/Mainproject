@@ -35,11 +35,11 @@ def logout_view(req):
     return redirect(login_view)
 #---------------------admin------------------------
 def shophome(req):
-    data=Product.objects.all()
-    if 'shop' in req.session:
-        return render(req,'shop/home.html',{'products':data})
-    else:
-        return redirect(login_view)
+    # data=Product.objects.all()
+    # if 'shop' in req.session:
+        return render(req,'shop/home.html')
+    # else:
+    #     return redirect(login_view)
 def addproduct(req) :
     if 'shop' in req.session:
         if req.method=='POST':
@@ -47,18 +47,18 @@ def addproduct(req) :
             name=req.POST['name']
             dis=req.POST['dis']
             offer_price=req.POST['offer_price']
-            # offer_price = req.POST.get('offer_price')
             price=req.POST['price']
             stock=req.POST['stock']
             file=req.FILES['img'] 
-
-            data=Product.objects.create(pid=pid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock)
-            data=Product.objects.get(pk=pid)
-            data.img=file
+            cate=req.POST['category']
+            cat=Category.objects.get(pk=cate)
+            data=Product.objects.create(pid=pid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock,category=cat,img=file)
+            # data=Product.objects.get(pk=pid)
             data.save()
             return redirect(shophome)
         else:
-            return render(req,'shop/addproduct.html')
+            cate=Category.objects.all()
+            return render(req,'shop/addproduct.html',{'cate':cate})
     else:
         return redirect(login_view) 
 def editproduct(req,pid) :
@@ -88,6 +88,21 @@ def deleteproduct(req,pid):
     os.remove('media/'+file)
     data.delete()
     return redirect(shophome)
+def add_category(req):
+    if 'shop' in req.session:
+        if req.method=='POST':
+            c_name=req.POST['cate_name']
+            c_name=c_name.lower()
+            try:
+                cate=Category.objects.get(Category_name=c_name)
+            except:
+                data=Category.objects.create(Category_name=c_name)
+                data.save()
+            return redirect(add_category)
+        categories=Category.objects.all()
+        return render(req,'shop/cate.html' ,{'cate':categories})
+    else:
+        return render(req,'shop/cate.html')
 def product_view(req,pid):
        data=Product.objects.get(pk=pid)
        return render(req,'user/product_view.html',{'Product':data})
