@@ -33,20 +33,20 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-4">
-                <img src="{{ product.img.url }}" alt="Product Image" class="img-fluid rounded shadow">
+                <img src="{{ Product.img.url }}" alt="Product Image" class="img-fluid rounded shadow">
             </div>
     
             <div class="col-md-8">
-                <h1 class="mb-3">{{ product.name }}</h1>
-                <p class="text-muted">Description:<span class="fw-normal">{{ product.dis }} </span></p>
-                <p>offer_price: <del style="text-decoration: none;" class="text-success">{{ product.offer_price }}</del></p>
-                <p>Price: <del style="text-decoration: line-through;" class="text-danger">{{ product.price }}</del></p>
-                <p>Stocks: <span class="fw-bold text-primary">{{ product.stock }}</span></p>
+                <h1 class="mb-3">{{ Product.name }}</h1>
+                <p class="text-muted">Description:<span class="fw-normal">{{ Product.dis }} </span></p>
+                <p>offer_price: <del style="text-decoration: none;" class="text-success">{{ Product.offer_price }}</del></p>
+                <p>Price: <del style="text-decoration: line-through;" class="text-danger">{{ Product.price }}</del></p>
+                <p>Stocks: <span class="fw-bold text-primary">{{ Product.stock }}</span></p>
                 <a href="../add_to_cart/{{product.pk}}" class="btn btn-success mt-3">Add to Cart</a>
                 <a href="../pro_buy/{{product.pk}}" class="btn btn-success mt-3">Buy Now</a>
                 
             </div>
-            <!-- <p>{{product.dis}}</p> -->
+            
 
         </div>
     </div>

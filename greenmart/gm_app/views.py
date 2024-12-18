@@ -34,12 +34,17 @@ def logout_view(req):
     req.session.flush()
     return redirect(login_view)
 #---------------------admin------------------------
-def shophome(req):
-    # data=Product.objects.all()
-    # if 'shop' in req.session:
-        return render(req,'shop/home.html')
-    # else:
-    #     return redirect(login_view)
+# def shophome(req):
+#     data=Product.objects.all()
+#     categories = Category.objects.all()
+#     if 'shop' in req.session:
+#         return render(req,'shop/home.html')
+#     else:
+#         return redirect(login_view)
+def shophome(request):
+    products = Product.objects.all()  
+    categories = Category.objects.all() 
+    return render(request, 'shop/home.html', {'products': products, 'category': categories})
 def addproduct(req) :
     if 'shop' in req.session:
         if req.method=='POST':
@@ -70,17 +75,19 @@ def editproduct(req,pid) :
             price=req.POST['price']
             stock=req.POST['stock']
             file=req.FILES.get('img')
+            
             if file:
-                Product.objects.filter(pk=pid).update(pid=proid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock,img=file)
+                Product.objects.filter(pk=pid).update(pid=proid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock)
                 data=Product.objects.get(pk=pid)
                 data.img=file
                 data.save()
             else:  
-                Product.objects.filter(pk=pid).update(pid=proid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock,img=file)
+                Product.objects.filter(pk=pid).update(pid=proid,name=name,dis=dis,offer_price=offer_price,price=price,stock=stock)
             return redirect(shophome)
         else:
             data=Product.objects.get(pk=pid)
-            return render(req,'shop/edit.html',{'data':data})
+            cate=Category.objects.all()
+            return render(req,'shop/edit.html',{'data':data,'cate':cate})
 def deleteproduct(req,pid):
     data=Product.objects.get(pk=pid)
     file=data.img.url
@@ -111,8 +118,14 @@ def product_view(req,pid):
 def add_to_cart(req,pid):
     product=Product.objects.get(pk=pid)
     user=User.objects.get(username=req.session['user'])
-    
-    return  redirect(view_cart)
+    try:
+        cart=Cart.objects.get(user=user,product=product)
+        cart.qty+=1
+        cart.save()
+    except:
+        data=Cart.objects.create(product=product,user=user,qty=1)
+        data.save()
+    return redirect(view_cart)
 def view_cart(req):
     user=User.objects.get(username=req.session['user'])
     data=Cart.objects.filter(user=user)

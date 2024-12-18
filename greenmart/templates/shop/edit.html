@@ -50,7 +50,16 @@
              <div>
                 <img src="{{data.img.url}}" alt="" style="width: 100px; height: 100px;">
              </div>
- 
+             <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required style="border-radius: 30px; padding: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 1px solid #ddd;">
+                    {% for category in cate %}
+                    <option value="{{ category.pk }}" {% if category == data.category %}selected{% endif %}>
+                        {{ category.Category_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
              <button type="submit" class="btn btn-primary btn-block">submit</button>
          </form>
      </div>

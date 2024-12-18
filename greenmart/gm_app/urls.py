@@ -11,6 +11,8 @@ urlpatterns = [
     path('add_cate',views.add_category),
 
     path('editproduct/<pid>',views.editproduct),
+    path('deleteproduct/<pid>',views.deleteproduct),
+
 # -----------------------user----------------
     path('register/',views.register),
     path('userhome',views.userhome),
