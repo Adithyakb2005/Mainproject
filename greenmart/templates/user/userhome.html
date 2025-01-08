@@ -33,6 +33,14 @@
               <li class="nav-item">
                 <a class="nav-link" href="view_cart">cart</a>
               </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="color:white;">Categories</a>
+                <ul class="dropdown-menu">
+                    {% for n in nav_cat %}
+                    <li><a class="dropdown-item text-dark" href="store#{{n.Category_name}}">{{n.Category_name}}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
               <li class="nav-item">
                 <a class="nav-link" href="logout">Logout</a>
               </li>

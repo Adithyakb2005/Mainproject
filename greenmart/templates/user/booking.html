@@ -4,24 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Bookings</title>
 </head>
 
 <body>
     <div class="container">
         <div class="row">
-            {% for i in bookings %}
+            {% for booking in bookings %}
             <div class="col-lg-12">
-                <img src="{{i.product.img.url}}" style="width: 400px; height: 400px;" alt="">
+                <img src="{{ booking.product.img.url }}" style="width: 400px; height: 400px;" alt="">
                 <div class="col-lg-7">
-                    <h1 class="mb-3">{{ i.Product.name }}</h1>
-                    <p>Price: <span class="text-success fw-bold">${{i.Product.price}}</span></p>
-                    <p>quantity:<span class="text-success fw-bold">{{i.qty}}</span></p>
-                                
-                   
+                    <h1 class="mb-3">{{ booking.product.name }}</h1>
+                    <p>Price: <span class="text-success fw-bold">${{ booking.product.price }}</span></p>
+                    <p>Quantity: <span class="text-success fw-bold">{{ booking.qty }}</span></p>
+                    
+                    <!-- Cancel Booking Button -->
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <button type="submit" name="cancel_booking" value="{{ booking.id }}" class="btn btn-danger">Cancel Booking</button>
+                    </form>
+                    
                 </div>
             </div>
             {% endfor %}
+        </div>
+
+        <!-- Show Total Price -->
+        <div class="col-lg-12 mt-3">
+            <h3>Total Price: <span class="text-success fw-bold">${{ total_price }}</span></h3>
         </div>
     </div>
 </body>

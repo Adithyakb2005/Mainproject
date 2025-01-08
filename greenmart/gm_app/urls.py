@@ -16,6 +16,7 @@ urlpatterns = [
 # -----------------------user----------------
     path('register/',views.register),
     path('userhome',views.userhome),
+    path('category_view',views.category_view),
     path('product_view/<pid>',views.product_view),
     path('add_to_cart/<pid>',views.add_to_cart),
     path('view_cart',views.view_cart),

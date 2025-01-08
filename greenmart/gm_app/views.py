@@ -152,11 +152,27 @@ def userhome(req):
         return render(req,'user/userhome.html',{'Product':data})
     else:
         return redirect(login)
-def qty_in(req,cid):
-    data=Cart.objects.get(pk=cid)
-    data.qty+=1
-    data.save()
+    
+def category_view(req, category_id):
+    try:
+        category = Category.objects.get(pid=category_id)
+    except Category.DoesNotExist:
+        return render(req, 'shop/category_view.html', {'error': 'Category does not exist'})
+    
+    products = Product.objects.filter(category=category)  
+    return render(req, 'shop/category_view.html', {'category': category, 'products': products})
+
+
+
+def qty_in(req, cid):
+    data = Cart.objects.get(pk=cid)
+    if data.qty < data.product.stock:
+        data.qty += 1
+        data.save()
+    else:
+        messages.warning(req, "You cannot add more than the available stock.")
     return redirect(view_cart)
+
 def qty_dec(req,cid):
     data=Cart.objects.get(pk=cid)
     data.qty-=1
@@ -165,6 +181,11 @@ def qty_dec(req,cid):
     if data.qty==0:
         data.delete()
     return redirect(view_cart)
+
+def remove_pro(req,cid):
+    data=Cart.objects.get(pk=cid)
+    data.delete()
+    return redirect(bookings)
 def cart_pro_buy(req,cid):
     cart=Cart.objects.get(pk=cid)
     product=cart.product
@@ -188,9 +209,18 @@ def pro_buy(req,pid):
 
 
 def bookings(req):
-    user=User.objects.get(username=req.session['user'])
-    buy=Buy.objects.filter(user=user)[::-1]
-    return render(req,'user/booking.html',{'bookings':buy})
+    user = User.objects.get(username=req.session['user'])  # Get the user from the session
+    buy = Buy.objects.filter(user=user).order_by('-id')  # Get all bookings for the user in reverse order
+    total_price = sum(item.product.price * item.qty for item in buy)  # Calculate total price
+
+    if req.method == 'POST':
+        booking_id = req.POST.get('cancel_booking')  
+        if booking_id:
+            booking = Buy.objects.get(id=booking_id)
+            booking.delete()  
+            return redirect(bookings)  
+
+    return render(req, 'user/booking.html', {'bookings': buy, 'total_price': total_price})
 
 def aboutuser(req):
     return render(req,'user/about.html')
