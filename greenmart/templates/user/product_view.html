@@ -42,7 +42,7 @@
                 <p>offer_price: <del style="text-decoration: none;" class="text-success">{{ Product.offer_price }}</del></p>
                 <p>Price: <del style="text-decoration: line-through;" class="text-danger">{{ Product.price }}</del></p>
                 <p>Stocks: <span class="fw-bold text-primary">{{ Product.stock }}</span></p>
-                <a href="../add_to_cart/{{Product.pk}}" class="btn btn-success mt-3">Add to Cart</a>
+                <a href="{% url 'add_to_cart' pro.pk %}" class="btn btn-primary">Add to Cart</a>
                 <a href="../pro_buy/{{Product.pk}}" class="btn btn-success mt-3">Buy Now</a>
                 
             </div>

@@ -31,3 +31,9 @@ class Buy(models.Model):
     qty=models.IntegerField()
     price=models.IntegerField()
     date=models.DateField(auto_now_add=True)
+
+class SpecialOffer(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='special_offers')
+    discount_percentage = models.PositiveIntegerField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()

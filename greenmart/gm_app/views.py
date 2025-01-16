@@ -66,7 +66,7 @@ def addproduct(req) :
             return render(req,'shop/addproduct.html',{'cate':cate})
     else:
         return redirect(login_view) 
-def editproduct(req,pid) :
+def edit_product(req,pid) :
         if req.method=='POST':
             proid=req.POST['proid']
             name=req.POST['name']
@@ -110,22 +110,43 @@ def add_category(req):
         return render(req,'shop/cate.html' ,{'cate':categories})
     else:
         return render(req,'shop/cate.html')
+def viewbookings(req):
+    bookings = Buy.objects.select_related('user', 'product').order_by('-id')  # Fetch all bookings
+    total_price = sum(booking.price for booking in bookings)  # Calculate total price of all bookings
+    
+    return render(req, 'shop/viewbooking.html', {'bookings': bookings, 'total_price': total_price})
 def product_view(req,pid):
        data=Product.objects.get(pk=pid)
        return render(req,'user/product_view.html',{'Product':data})
     
 
-def add_to_cart(req,pid):
-    product=Product.objects.get(pk=pid)
-    user=User.objects.get(username=req.session['user'])
+
+def add_to_cart(req, pid):
+    # Fetch the product or return 404 if not found
+    product = get_object_or_404(Product, pk=pid)
+
+    # Ensure user is logged in before proceeding
+    if 'user' not in req.session:
+        messages.error(req, "You must log in to add items to your cart.")
+        return redirect('login')  # Redirect to the login page if user is not logged in
+
+    # Fetch the user from the session
+    user = get_object_or_404(User, username=req.session['user'])
+
+    # Add product to cart or update quantity if already present
     try:
-        cart=Cart.objects.get(user=user,Product=product)
-        cart.qty+=1
+        cart = Cart.objects.get(user=user, product=product)
+        cart.qty += 1  # Increment quantity if the product is already in the cart
         cart.save()
-    except:
-        data=Cart.objects.create(product=product,user=user,qty=1)
-        data.save()
-    return  redirect(view_cart)
+        messages.success(req, f"{product.name} quantity updated in your cart.")
+    except Cart.DoesNotExist:
+        # Create a new cart item if it doesn't exist
+        Cart.objects.create(product=product, user=user, qty=1)
+        messages.success(req, f"{product.name} added to your cart.")
+
+    # Redirect to the cart view
+    return redirect('view_cart')
+
 def view_cart(req):
     user=User.objects.get(username=req.session['user'])
     data=Cart.objects.filter(user=user)
@@ -208,11 +229,12 @@ def pro_buy(req,pid):
 
 
 
+
 def bookings(req):
     user = User.objects.get(username=req.session['user'])  # Get the user from the session
     buy = Buy.objects.filter(user=user).order_by('-id')  # Get all bookings for the user in reverse order
     total_price = sum(item.product.price * item.qty for item in buy)  # Calculate total price
-
+  
     if req.method == 'POST':
         booking_id = req.POST.get('cancel_booking')  
         if booking_id:
