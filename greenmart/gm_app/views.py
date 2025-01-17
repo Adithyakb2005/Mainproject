@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate,logout
 from django.contrib import messages
 from . models import *
 import os
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 # Create your views here.
 
@@ -116,41 +117,37 @@ def viewbookings(req):
     
     return render(req, 'shop/viewbooking.html', {'bookings': bookings, 'total_price': total_price})
 def product_view(req,pid):
+       product = get_object_or_404(Product, id=pid)
        data=Product.objects.get(pk=pid)
-       return render(req,'user/product_view.html',{'Product':data})
+       return render(req,'user/product_view.html',{'Product':data,'product': product})
     
 
 
 def add_to_cart(req, pid):
-    # Fetch the product or return 404 if not found
     product = get_object_or_404(Product, pk=pid)
-
-    # Ensure user is logged in before proceeding
     if 'user' not in req.session:
         messages.error(req, "You must log in to add items to your cart.")
-        return redirect('login')  # Redirect to the login page if user is not logged in
-
-    # Fetch the user from the session
+        return redirect('login') 
     user = get_object_or_404(User, username=req.session['user'])
-
-    # Add product to cart or update quantity if already present
     try:
         cart = Cart.objects.get(user=user, product=product)
-        cart.qty += 1  # Increment quantity if the product is already in the cart
+        cart.qty += 1  
         cart.save()
         messages.success(req, f"{product.name} quantity updated in your cart.")
     except Cart.DoesNotExist:
-        # Create a new cart item if it doesn't exist
+        
         Cart.objects.create(product=product, user=user, qty=1)
         messages.success(req, f"{product.name} added to your cart.")
-
-    # Redirect to the cart view
     return redirect('view_cart')
 
-def view_cart(req):
-    user=User.objects.get(username=req.session['user'])
-    data=Cart.objects.filter(user=user)
-    return render(req,'user/cart.html',{'cart':data})
+def view_cart(request):
+    cart = Cart.objects.filter(user=request.user, is_active=True)
+    cart_total = sum(item.product.offer_price * item.qty for item in cart)
+    
+    return render(request, 'user/cart.html', {
+        'cart': cart,
+        'cart_total': cart_total,
+    })
 # --------------------------------------------------register
 def register(req):
     if req.method=='POST':
@@ -177,12 +174,14 @@ def userhome(req):
 def category_view(req, category_id):
     try:
         category = Category.objects.get(pid=category_id)
+        products = Product.objects.filter(category=category)  # Fetch products in the category
+        return render(req, 'user/category_view.html', {'category': category, 'products': products})
     except Category.DoesNotExist:
-        return render(req, 'shop/category_view.html', {'error': 'Category does not exist'})
-    
-    products = Product.objects.filter(category=category)  
-    return render(req, 'shop/category_view.html', {'category': category, 'products': products})
-
+        return render(req, 'user/category_view.html', {'error': 'Category does not exist'})
+def product_search(request):
+    query = request.GET.get('query', '').strip()
+    products = Product.objects.filter(name__icontains=query) if query else []
+    return render(request, 'user/search_results.html', {'products': products, 'query': query})
 
 
 def qty_in(req, cid):

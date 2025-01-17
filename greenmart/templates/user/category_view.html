@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ category.name if category else 'Category Not Found' }}</title>
 </head>
 <body>
-    <h1>{{ category.name }}</h1>
-<p>{{ category.description }}</p>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% else %}
+        <header>
+            <h1>{{ category.name }}</h1>
+            <p>{{ category.description }}</p>
+        </header>
 
-<ul>
-    {% for product in products %}
-        <li>
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.dis }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <img src="{{ product.img.url }}" alt="{{ product.name }}">
-        </li>
-    {% endfor %}
-</ul>
+        <main>
+            <ul>
+                {% for product in products %}
+                    <li>
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                        <p>Price: ${{ product.price }}</p>
+                        <img src="{{ product.img.url }}" alt="Image of {{ product.name }}">
+                    </li>
+                {% endfor %}
+            </ul>
+        </main>
+    {% endif %}
 </body>
 </html>

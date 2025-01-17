@@ -19,16 +19,16 @@
           <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="{%url 'user_home'%}">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="Contactuser">Contact us</a>
+                <a class="nav-link" href="{% url 'contact_user' %}">Contact us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="view_cart">cart</a>
+                <a class="nav-link" href="{% url 'view_cart' %}">cart</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="logout">Logout</a>
+                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
               </li>
             </ul>
           </div>
@@ -48,7 +48,6 @@
                         <p><i class="fa fa-check text-primary me-3"></i>top organic fruits are apples,bananas,blueberrys,orangesand mangoes</p>
                         <p><i class="fa fa-check text-primary me-3"></i>top organic vegitables are</p>
                         <p><i class="fa fa-check text-primary me-3"></i>Clita duo justo magna dolore erat amet</p>
-                        <a class="btn btn-primary rounded-pill py-3 px-5 mt-3" href="">Read More</a>
                     </div>
                 </div>
             </div>
@@ -116,14 +115,9 @@
             <div class="container py-5">
                 <div class="row g-5">
                     <div class="col-lg-3 col-md-6">
-                        <h1 class="fw-bold text-primary mb-4">F<span class="text-secondary">oo</span>dy</h1>
+                       
                         <p>Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita</p>
-                        <div class="d-flex pt-2">
-                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href="{% static 'img/download.png'%}"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href=""><i class="fab fa-youtube"></i></a>
-                            <a class="btn btn-square btn-outline-light rounded-circle me-0" href=""><i class="fab fa-linkedin-in"></i></a>
-                        </div>
+                        
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <h4 class="text-light mb-4">Address</h4>

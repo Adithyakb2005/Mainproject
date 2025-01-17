@@ -97,16 +97,21 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'user_home' %}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'about_user' %}">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'contact_user' %}">Contact Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}"><img src="{% static 'img/cart.jpg' %}" alt="Cart" style="width: 24px;"></a></li>
-                    <li class="nav-item dropdown">
+                    <!-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">Categories</a>
-                        <ul class="dropdown-menu">
-                            {% for n in nav_cat %}
-                            <li><a class="dropdown-item" href="#{{ n.Category_name }}">{{ n.Category_name }}</a></li>
-                            {% endfor %}
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'category_view' category_id=1 %}">Vegitables</a></li>
+                            <li><a class="dropdown-item" href="{% url 'category_view' category_id=2 %}">Fruits</a></li>
                         </ul>
-                    </li>
+                    </li> -->
+                    
+                    <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}"><img src="{% static 'img/cart.png' %}" alt="Cart" style="width: 24px;"></a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    <form class="d-flex ms-3" method="GET" action="{% url 'product_search' %}">
+                        <input class="form-control me-2" type="search" name="query" placeholder="Search products..." aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    
                 </ul>
             </div>
         </div>

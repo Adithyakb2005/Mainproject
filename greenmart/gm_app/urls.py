@@ -16,10 +16,11 @@ urlpatterns = [
     # User Views
     path('register/', views.register, name='register'),
     path('userhome/', views.userhome, name='user_home'),
-    path('category_view/<int:category_id>/', views.category_view, name='category_view'),
+    path('userhome/category_view/<int:category_id>/', views.category_view, name='category_view'),
     path('product_view/<int:pid>/', views.product_view, name='product_view'),
     path('add_to_cart/<int:pid>/', views.add_to_cart, name='add_to_cart'),
     path('view_cart/', views.view_cart, name='view_cart'),
+    path('search/', views.product_search, name='product_search'),
 
     # Booking and Cart Management
     path('viewbookings', views.viewbookings, name='viewbookings'),
