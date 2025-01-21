@@ -5,9 +5,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookings</title>
+    {%load static%}
+    <style>
+       * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #00a859 !important;
+            font-size: 1.8rem;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: #333;
+            margin-right: 15px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #00a859;
+        }
+
+        .navbar-toggler {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
+   <!-- Navbar -->
+   <nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'user_home' %}">GreenMart</a>
+        <div>
+            <ul style="list-style: none; display: flex; margin: 0; padding: 0;">
+                <li><a class="nav-link" href="{% url 'user_home' %}">Home</a></li>
+                <li><a class="nav-link" href="{% url 'about_user' %}">About</a></li>
+                <li><a class="nav-link" href="{% url 'contact_user' %}">Contact Us</a></li>
+                <li><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                <li><a class="nav-link" href="{% url 'view_cart' %}"><img src="{% static 'img/cart.png' %}" alt="Cart" style="width: 24px;"></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
     <div class="container">
         <div class="row">
             {% for booking in bookings %}

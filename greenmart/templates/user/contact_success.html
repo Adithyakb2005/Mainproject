@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submitted</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #00a859;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #007a3d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Thank you for contacting us!</h1>
+    <p>Your message has been received. We will get back to you soon.</p>
+    <a href="{% url 'contact_user' %}" class="btn">Back to Contact Page</a>
+    <a href="{% url 'user_home' %}" class="btn">Back to Home</a>
+</body>
+</html>

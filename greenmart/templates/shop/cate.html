@@ -6,39 +6,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category Form</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body style="background: linear-gradient(135deg, #f5f7fa, #c3cfe2); font-family: Arial, sans-serif; color: #333;">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background: #0e1527; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); padding: 15px 0;">
-        <div class="container">
-            <a class="navbar-brand" href="shophome">
-                <img src="{% static 'images/sm_logo.png' %}" alt="Logo" style="height: 70px; transition: transform 0.3s ease-in-out;">
-            </a>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{%url 'shophome'%}" style="color: white;">Home</a>
-                </li>
-            </ul>
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #28a745 !important;
+        }
+        .nav-link {
+            font-size: 1rem;
+            margin-right: 15px;
+        }
+        .nav-link:hover {
+            color: #28a745 !important;
+        }
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group input {
+            border-radius: 30px;
+            padding: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            border: none;
+            border-radius: 30px;
+            padding: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="font-size: 1.8rem; font-weight: bold; color: #28a745;">GreenMart</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <form class="d-flex ms-3" method="GET" action="{% url 'product_search' %}">
+                        <input class="form-control me-2" type="search" name="query" placeholder="Search products..." aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{%url 'shophome'%}" style="font-weight: bold;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'addproduct' %}">Add Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_category' %}">Add Category</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Services
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li><a class="dropdown-item" href="{%url 'viewbookings'%}">View Booking</a></li>
+                            <li><a class="dropdown-item" href="{%url 'customer_support'%}">Customer Support</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'logout'%}">Logout</a>
+                    </li>
+                </ul>
+                
+            </div>
         </div>
-    </nav>
+        </nav>
 
     <!-- Form Container -->
-    <div class="container d-flex justify-content-center align-items-center" style="height: 90vh;">
-        <div class="card shadow-lg" style="width: 100%; max-width: 500px; background: white; border-radius: 15px; padding: 30px;">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 70vh;">
+        <div class="card shadow-lg">
             <h2 class="text-center mb-4" style="color: #0e1527; font-weight: bold;">Add Category</h2>
 
             <!-- Form -->
             <form action="" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="Category_name" style="font-weight: bold;">Category Name</label>
+                    <label for="cate_name" style="font-weight: bold;">Category Name</label>
                     <input 
                         type="text" 
                         name="cate_name" 
+                        id="cate_name"
                         placeholder="Enter product category" 
                         class="form-control" 
-                        style="border-radius: 30px; padding: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 1px solid #ddd;"
                         required
                     >
                 </div>
@@ -46,17 +126,16 @@
                 <!-- Submit Button -->
                 <button 
                     type="submit" 
-                    class="btn btn-primary btn-block" 
-                    style="background: #3498db; border: none; border-radius: 30px; padding: 10px; font-size: 1.1rem; font-weight: bold; transition: background 0.3s;"
-                    onmouseover="this.style.background='#2980b9';"
-                    onmouseout="this.style.background='#3498db';"
-                > Submit
+                    class="btn btn-primary btn-block"
+                >
+                    Submit
                 </button>
             </form>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

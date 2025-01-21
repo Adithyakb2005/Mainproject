@@ -89,44 +89,44 @@
 </head>
 <body>
     <!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-  <div class="container-fluid">
-      <a class="navbar-brand" href="#" style="font-size: 1.8rem; font-weight: bold; color: #28a745;">GreenMart</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-              <li class="nav-item">
-                  <a class="nav-link active" href="#" style="font-weight: bold;">Home</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'addproduct' %}">Add Product</a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'add_category' %}">Add Category</a>
-              </li>
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Services
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                      <li><a class="dropdown-item" href="{%url 'viewbookings'%}">View Booking</a></li>
-                      <li><a class="dropdown-item" href="#">Customer Support</a></li>
-                      <li><a class="dropdown-item" href="#">FAQs</a></li>
-                  </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{%url 'logout'%}">Logout</a>
-            </li>
-          </ul>
-          <form class="d-flex ms-3">
-              <input class="form-control me-2" type="search" placeholder="Search Products" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-      </div>
-  </div>
-</nav>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="font-size: 1.8rem; font-weight: bold; color: #28a745;">GreenMart</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <form class="d-flex ms-3" method="GET" action="{% url 'product_search' %}">
+                        <input class="form-control me-2" type="search" name="query" placeholder="Search products..." aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" style="font-weight: bold;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'addproduct' %}">Add Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_category' %}">Add Category</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Services
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li><a class="dropdown-item" href="{%url 'viewbookings'%}">View Booking</a></li>
+                            <li><a class="dropdown-item" href="{%url 'customer_support'%}">Customer Support</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'logout'%}">Logout</a>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+        </nav>
 
 
     <!-- Carousel Section -->

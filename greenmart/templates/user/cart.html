@@ -6,32 +6,77 @@
     <title>Shopping Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% load static %}
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #00a859 !important;
+            font-size: 1.8rem;
+        }
+        .navbar {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            color: #333 !important;
+            margin-right: 10px;
+        }
+        .nav-link:hover {
+            color: #00a859 !important;
+        }
+        .cart-product-img {
+            max-width: 100%;
+            height: auto;
+        }
+        .cart-product-details {
+            padding-left: 20px;
+        }
+        .cart-total {
+            font-size: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .cart-product-img {
+                width: 100%;
+                max-width: 200px;
+            }
+            .cart-product-details {
+                padding-left: 10px;
+            }
+            .cart-total {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
         <div class="container-fluid">
-          <a class="navbar-brand" href="">Greenmart</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="{%url 'user_home'%}">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'contact_user' %}">Contact us</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'view_cart' %}">cart</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-              </li>
-            </ul>
-          </div>
+            <a class="navbar-brand" href="{% url 'user_home' %}">GreenMart</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <form class="d-flex ms-3" method="GET" action="{% url 'product_search' %}">
+                        <input class="form-control me-2" type="search" name="query" placeholder="Search products..." aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'user_home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about_user' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact_user' %}">Contact Us</a></li> 
+                    <li class="nav-item"><a class="nav-link" href="{% url 'bought_products' %}">Bought Products</a></li>                   
+                    <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'view_cart' %}"><img src="{% static 'img/cart.png' %}" alt="Cart" style="width: 24px;"></a></li>
+                </ul>
+            </div>
         </div>
-      </nav>
+    </nav>
+
     <div class="container mt-5">
         <h1 class="text-center mb-4">Shopping Cart</h1>
         {% if cart %}
@@ -40,11 +85,11 @@
             <div class="col-lg-12 mb-4 border-bottom pb-3">
                 <div class="row">
                     <!-- Product Image -->
-                    <div class="col-lg-5">
-                        <img src="{{ i.product.img.url }}" class="img-fluid" style="width: 100%; max-width: 400px; height: auto;" alt="Product Image">
+                    <div class="col-md-4 col-12">
+                        <img src="{{ i.product.img.url }}" class="cart-product-img" alt="Product Image">
                     </div>
                     <!-- Product Details -->
-                    <div class="col-lg-7">
+                    <div class="col-md-8 col-12 cart-product-details">
                         <h2 class="mb-3">{{ i.product.name }}</h2>
                         <p>Price: <span class="text-success fw-bold">${{ i.product.offer_price }}</span></p>
                         <p>
@@ -56,8 +101,9 @@
                                  <a href="{% url 'increase_quantity' i.pk %}" style="text-decoration: none;">+</a>
                             </button>
                         </p>
-                        <p>Subtotal: <span class="fw-bold">${{ i.qty|floatformat:2 }}</span></p>
-                        <a href="cart_pro_buy/{{ i.pk }}" class="btn btn-primary mt-3">Buy Now</a>
+                        <a href="{% url 'remove_from_cart' i.pk %}" class="btn btn-danger mb-2">Remove from Cart</a>
+                        <!-- View Product Button -->
+                        <a href="{% url 'product_view' i.product.pk %}" class="btn btn-info mb-2">View Product</a>
                     </div>
                 </div>
             </div>
@@ -65,8 +111,8 @@
         </div>
         <!-- Total Price -->
         <div class="row mt-4">
-            <div class="col-lg-12 text-end">
-                <h3>Total Price: <span class="text-success fw-bold">${{ cart_total }}</span></h3>
+            <div class="col-12 text-end">
+                <h3 class="cart-total">Total Price: <span class="text-success fw-bold">${{ cart_total }}</span></h3>
                 <a href="#" class="btn btn-success mt-3">Buy All</a>
             </div>
         </div>
@@ -78,5 +124,6 @@
         </div>
         {% endif %}
     </div>
+
 </body>
 </html>

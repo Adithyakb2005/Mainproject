@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate,logout
 from django.contrib import messages
 from . models import *
 import os
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 # Create your views here.
@@ -112,16 +113,18 @@ def add_category(req):
     else:
         return render(req,'shop/cate.html')
 def viewbookings(req):
-    bookings = Buy.objects.select_related('user', 'product').order_by('-id')  # Fetch all bookings
-    total_price = sum(booking.price for booking in bookings)  # Calculate total price of all bookings
-    
-    return render(req, 'shop/viewbooking.html', {'bookings': bookings, 'total_price': total_price})
+    try:
+        bookings = Buy.objects.select_related('user', 'product').order_by('-id')  # Fetch all bookings
+        total_price = sum(booking.price for booking in bookings)  # Calculate total price of all bookings
+        return render(req, 'shop/viewbooking.html', {'bookings': bookings, 'total_price': total_price})
+    except Exception as e:
+        print(f"Error fetching bookings: {e}")
+        return render(req, 'shop/viewbooking.html', {'error': 'An error occurred while fetching the bookings.'})
+
 def product_view(req,pid):
        product = get_object_or_404(Product, id=pid)
        data=Product.objects.get(pk=pid)
        return render(req,'user/product_view.html',{'Product':data,'product': product})
-    
-
 
 def add_to_cart(req, pid):
     product = get_object_or_404(Product, pk=pid)
@@ -140,14 +143,17 @@ def add_to_cart(req, pid):
         messages.success(req, f"{product.name} added to your cart.")
     return redirect('view_cart')
 
-def view_cart(request):
-    cart = Cart.objects.filter(user=request.user, is_active=True)
+def view_cart(request,):
+    # Get the user's cart
+    cart = Cart.objects.filter(user=request.user)
+    if not cart.exists():
+        return redirect('user_home')
+
+    # Calculate the total price
     cart_total = sum(item.product.offer_price * item.qty for item in cart)
-    
-    return render(request, 'user/cart.html', {
-        'cart': cart,
-        'cart_total': cart_total,
-    })
+
+    return render(request, 'user/cart.html', {'cart': cart, 'cart_total': cart_total})
+
 # --------------------------------------------------register
 def register(req):
     if req.method=='POST':
@@ -215,7 +221,10 @@ def cart_pro_buy(req,cid):
     buy=Buy.objects.create(product=product,user=user,qty=qty,price=price)
     buy.save()
     return redirect(bookings)
-
+def remove_from_cart(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, pk=cart_item_id)
+    cart_item.delete()
+    return redirect(view_cart)  # Redirect back to the cart page
 
 def pro_buy(req,pid):
     product=Product.objects.get(pk=pid)
@@ -226,8 +235,73 @@ def pro_buy(req,pid):
     buy.save()
     return redirect(bookings)
 
+def bought_products(request):
+    # Get the products the user has bought
+    bought_items = Buy.objects.filter(user=request.user)
+    return render(request, 'user/bought_products.html', {'bought_items': bought_items})
 
 
+def payment_selection(request,pid):
+    # Get the user's cart
+    cart = Cart.objects.filter(user=request.user)
+    if not cart.exists():
+        return redirect(userhome)
+    
+    # Render the payment selection template
+    return render(request, 'user/payment_selection.html', {'cart': cart,'product_id': pid})
+
+
+def complete_purchase(request):
+    if request.method == 'POST':
+        # Assume the payment was successful
+        cart = Cart.objects.filter(user=request.user)
+        
+        # Mark items as purchased and transfer to Bought Products
+        for item in cart:
+            Buy.objects.create(
+                user=item.user,
+                product=item.product,
+                qty=item.qty,
+                price=item.product.offer_price
+            )
+        
+        # Clear the cart
+        cart.delete()
+        return redirect('bought_products')
+    
+    # If GET request, show a message or redirect
+    return redirect('payment_selection')
+
+
+def process_payment(request, method, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if method == 'credit_card':
+        # Handle credit card payment logic
+        return render(request, 'user/payment_success.html', {'product': product, 'method': 'Credit Card'})
+    elif method == 'paypal':
+        # Handle PayPal payment logic
+        return render(request, 'user/payment_success.html', {'product': product, 'method': 'PayPal'})
+    elif method == 'cod':
+        # Handle Cash on Delivery logic
+        return render(request, 'user/payment_success.html', {'product': product, 'method': 'Cash on Delivery'})
+    else:
+        return render(request, 'user/payment_error.html', {'product': product})
+
+def submit_form(request):
+    if request.method == 'POST':
+        # Collect form data from POST request
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        # Save the data to the database (if applicable)
+        # Assuming you have a Contact model
+        Contact.objects.create(name=name, email=email, message=message)
+
+        # Redirect or show a success message
+        return render(request, 'user/contact_success.html')
+
+    return HttpResponse("Invalid request method.")
 
 def bookings(req):
     user = User.objects.get(username=req.session['user'])  # Get the user from the session
@@ -243,6 +317,23 @@ def bookings(req):
 
     return render(req, 'user/booking.html', {'bookings': buy, 'total_price': total_price})
 
+def cancel_booking(request):
+    if request.method == 'POST':
+        # Add logic to cancel the booking
+        # For example, retrieve the user's order and mark it as canceled
+        order = Buy.objects.get(user=request.user, status='pending')  # Adjust condition as needed
+        order.status = 'canceled'
+        order.save()
+
+        # Redirect to an appropriate page after cancellation, e.g., the homepage or a confirmation page
+        return redirect('user_home')  # Redirect to home or an appropriate page after cancelation
+    return redirect('user_home')  # Redirect in case the request is not POST
+def customer_support(request):
+    # Fetch all the contact requests from the database
+    contact_requests = Contact.objects.all().order_by('-submitted_at')
+
+    # Render the template with the contact requests
+    return render(request, 'shop/customer_suport.html', {'contact_requests': contact_requests})
 def aboutuser(req):
     return render(req,'user/about.html')
 def Contactuser(req):

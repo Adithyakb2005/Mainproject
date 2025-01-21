@@ -29,12 +29,13 @@ class Cart(models.Model):
 class Buy(models.Model):
     product=models.ForeignKey(Product,on_delete=models.CASCADE)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    qty=models.IntegerField()
+    qty=models.PositiveIntegerField()
     price=models.IntegerField()
     date=models.DateField(auto_now_add=True)
 
-class SpecialOffer(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='special_offers')
-    discount_percentage = models.PositiveIntegerField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
